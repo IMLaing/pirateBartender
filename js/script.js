@@ -2,6 +2,7 @@ $(document).ready(function(){
 
   //questions and possible ingredients with flavor id which is currently unused
   var currentQuestion = -1;
+
   var questions = [
     { question:"do you want it salty?",
       ingredients:["salt", "olive"],
@@ -22,7 +23,16 @@ $(document).ready(function(){
   ];
 
   //Array to build the pref. cocktail
+  var drinkName = "";
   var drinkPref = [];
+  var pirateWords = ['anchor', 'assault', 'boatswain', 'cannon', 'deck hand', 'flotsam'];
+  var pirateAdjectives = ['ahoy', 'barbaric', 'dangerous', 'escaping', 'hooked'];
+  var drinkNaming = function(){
+    var word = pirateWords[Math.floor(Math.random() * pirateWords.length)];
+    var adjective = pirateAdjectives[Math.floor(Math.random() * pirateAdjectives.length)];
+    drinkName = adjective +'-'+ word;
+  };
+  
 
   //redundant function for test purpose
   function askQuestion(){
@@ -33,10 +43,11 @@ $(document).ready(function(){
     console.log(questions.length);
     console.log(currentQuestion);
     if(currentQuestion >= questions.length-1){
-      $('.question').html("It seems you would like a drink with " + drinkPref);
+      drinkNaming();
+      $('.question').html("It seems you would like a drink with " + drinkPref + " that would be a " + drinkName);
     } else {
       currentQuestion++;
-    askQuestion();
+      askQuestion();
     }
   }
   $('#testClick').on('click', function(){
