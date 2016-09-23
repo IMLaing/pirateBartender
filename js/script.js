@@ -1,70 +1,88 @@
 $(document).ready(function(){
+  //Single State Object
+  var state = {
+    currentQuestion: 0,
+    nextQuestion: function() {
+      if(this.currentQuestion >= questions.length-1) {
+        this.drinkNaming();
+        $('.question').html("It seems you would like a drink with " + this.drinkPref + " that would be a " + this.drinkName);
+        $('.responses').hide();
+        $('#startOver').show();
+      } else {
+        this.currentQuestion++;
+        askQuestion();
+      }
+    },
+    drinkPref: [],
+    drinkName: '',
+    drinkNaming: function() {
+      var word = pirateWords[Math.floor(Math.random() * pirateWords.length)];
+      var adjective = pirateAdjectives[Math.floor(Math.random() * pirateAdjectives.length)];
+      this.drinkName = adjective +'-'+ word;
+    }
+  };
 
-  //questions and possible ingredients with flavor id which is currently unused
-  var currentQuestion = -1;
+  var BartenderQuestion = function(question, ingred, flavor){
+      this.question = question;
+      this.ingredients = ingred;
+      this.flavor = flavor;
+  };
 
   var questions = [
-    { question:"do you want it salty?",
-      ingredients:["salt", "olive"],
-      flavor: "salty"
-    },
-    { question: "do you like it sweet?",
-      ingredients:["sugar", "honey","agave nectar","maple syrup"],
-      flavor: "sweet"
-    },
-    { question: "do you like it strong?",
-      ingredients:["vodka","rum","whiskey"],
-      flavor: "strength"
-    },
-    { question: "do you like fruits?",
-      ingredients:["orange","cherry","lime"],
-      flavor: "fruity"
-    }
-  ];
+      new BartenderQuestion("do you want it salty?",["salt", "olive"],"salty"),
+      new BartenderQuestion("do you like it sweet?",["sugar", "honey","agave nectar","maple syrup"],"sweet"),
+      new BartenderQuestion("do you like it strong?",["vodka","rum","whiskey"],"strength"),
+      new BartenderQuestion("do you like fruits?",["orange","cherry","lime"],"fruity"),
+      ];
 
-  //Array to build the pref. cocktail
-  var drinkName = "";
-  var drinkPref = [];
   var pirateWords = ['anchor', 'assault', 'boatswain', 'cannon', 'deck hand', 'flotsam'];
   var pirateAdjectives = ['ahoy', 'barbaric', 'dangerous', 'escaping', 'hooked'];
-  var drinkNaming = function(){
-    var word = pirateWords[Math.floor(Math.random() * pirateWords.length)];
-    var adjective = pirateAdjectives[Math.floor(Math.random() * pirateAdjectives.length)];
-    drinkName = adjective +'-'+ word;
-  };
+
+    //render
+  function askQuestion(){
+    $('.question').html(questions[state.currentQuestion].question);
+  }
   
 
-  //redundant function for test purpose
-  function askQuestion(){
-    $('.question').html(questions[currentQuestion].question);
-  }
+ //EVENT LISTNERS 
+  $('#startOver').hide();
+  askQuestion();
 
-  function nextQuestion(){
-    console.log(questions.length);
-    console.log(currentQuestion);
-    if(currentQuestion >= questions.length-1){
-      drinkNaming();
-      $('.question').html("It seems you would like a drink with " + drinkPref + " that would be a " + drinkName);
-    } else {
-      currentQuestion++;
-      askQuestion();
-    }
-  }
-  $('#testClick').on('click', function(){
-    currentQuestion++;
+  $('#startOver').on('click', function(){
+    state.currentQuestion = 0;
+    state.drinkPref = [];
+    $('.responses').show();
+    $('#startOver').hide();
     askQuestion();
   });
+
   $('.yesBtn').on('click', function(){
-   drinkPref.push(questions[currentQuestion].ingredients[Math.floor(Math.random() * (questions[currentQuestion].ingredients.length))]);
-    nextQuestion();
+    state.drinkPref.push(questions[state.currentQuestion].ingredients[Math.floor(Math.random() * (questions[state.currentQuestion].ingredients.length))]);
+    state.nextQuestion();
+    console.log(state.drinkPref);
   });
+
   $('.noBtn').on('click', function(){
-    if(currentQuestion>=0){
-      nextQuestion();
+    if(state.currentQuestion>=0){
+      state.nextQuestion();
     }
   });
+
   $('.indifBtn').on('click', function(){
-    drinkPref.push(questions[currentQuestion].ingredients[Math.floor(Math.random() * (questions[currentQuestion].ingredients.length))]);
-    nextQuestion();
+    state.drinkPref.push(questions[state.currentQuestion].ingredients[Math.floor(Math.random() * (questions[state.currentQuestion].ingredients.length))]);
+    state.nextQuestion();
   });
+
+  console.log(questions[state.currentQuestion]);
 });
+
+/*
+State or Controller (kinda)
+var app = {...}
+
+Dom or View 
+render()
+
+$doc.ready
+
+*/
