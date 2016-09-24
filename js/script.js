@@ -37,6 +37,7 @@ $(document).ready(function(){
 
   var pirateWords = ['anchor', 'assault', 'boatswain', 'cannon', 'deck hand', 'flotsam'];
   var pirateAdjectives = ['ahoy', 'barbaric', 'dangerous', 'escaping', 'hooked'];
+  var weakDrink = ['a spash of grog', 'a bit of ale'];
 
     //render
   function askQuestion(){
@@ -63,9 +64,15 @@ $(document).ready(function(){
   });
 
   $('.noBtn').on('click', function(){
-    if(state.currentQuestion>=0){
+    console.log('nobtn?');
+    console.log(state.currentQuestion);
+    if(state.currentQuestion === 2){
+        state.drinkPref.push(weakDrink[Math.floor(Math.random() * (2))]); 
+        state.nextQuestion();
+    } else if(state.currentQuestion>=0){
       state.nextQuestion();
     }
+  
   });
 
   $('.indifBtn').on('click', function(){
